@@ -35,6 +35,7 @@
         * http://127.0.0.1:8080
 
 5. **Inspect docker image or container**
+
        inspect a image
        
               * docker inspect <image_id>
