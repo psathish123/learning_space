@@ -1,55 +1,59 @@
+## Docker Learning
+
 > **Reference site: https://www.tutorialspoint.com/docker/**
  
+## **Docker install**
 
-1. **Docker install**
+    install via rpm / debian package
 
-        * install via rpm / debian package
+## **Docker image download**
 
-2. **Docker image download**
-        
-        * docker images
-        * docker pull <image_name>
+```sh
+        docker images
+        docker pull <image_name>
+```
+Example
+```sh
+        docker pull jenkins/jenkins:lts
+        docker images
+```
+## **Docker image run**
 
-                * docker pull jenkins/jenkins:lts
-        
-        * docker images
-
-
-3. **Docker image run**
-
-        * docker ps 
-        * docker run -p localport:containerport <image_name>
-                        
-                * docker run -p 8080:8080 -p 50000:50000 docker.io/jenkins/jenkins:lts
-
-        * docker ps 
-     
-     View all containers 
-     
-        * docker ps -a
-
-4. **Access the container application from base machine**
-
-        * Access your application from your web browser chrome
-
-        * http://127.0.0.1:8080
-
-5. **Inspect docker image or container**
-
-       inspect a image
-       
-              * docker inspect <image_id>
-              
-       inspect a container
-       
-              * docker inspect <container_id>
-
-6. **Create own Docker image**
+```sh
+ docker ps 
+ docker run -p localport:containerport <image_name>
+```  
+Example
+```
+ docker run -p 8080:8080 -p 50000:50000 docker.io/jenkins/jenkins:lts
+```
+View docker containers
+```
+docker ps      
+docker ps -a
 ```
 
+## **Access the container application from base machine**
+
+     Access your application from your web browser chrome
+     http://127.0.0.1:8080
+
+## **Inspect docker image or container**
+Inspect docker image
+
+```       
+docker inspect <image_id>
+```              
+Inspect a container
+
+```
+ docker inspect <container_id>
+```
+
+## **Create own Docker image**
+```sh
 # mkdir myapp
 # cd myapp/
-
 # echo "echo Myscript" >> ./myscript.sh 
 
 # cat Dockerfile
@@ -59,17 +63,6 @@ LABEL version="1.0"
 LABEL description="First image with Dockerfile."
 COPY ./myscript.sh /root
 
-# docker build -t mydockerimage:v1.0 .
-
-
-View your image
-
-# docker images
-
-```
-
-**Docker Build sample output**
-```
 
 # docker build -t sathishimg:v3.0 .
 Sending build context to Docker daemon  4.096kB
@@ -97,5 +90,124 @@ Successfully tagged sathishimg:v3.0
 # docker images
 REPOSITORY        TAG       IMAGE ID       CREATED              SIZE
 sathishimg        v3.0      b9e660b8349c   About a minute ago   231MB
+```
+
+## **Docker - Working with Containers**
+
+**docker top**
+
+With this command, you can see the top processes within a container.
+
+#### Syntax
+
+    docker top ContainerID 
+   
+```sh
+[root@ip-172-31-87-150 ~]# docker run -it centos:latest /bin/bash
+[root@da81b50a1241 ~]# sleep 60
+```
+
+Check in other putty session
+```sh
+[root@ip-172-31-87-150 ~]# docker ps
+CONTAINER ID   IMAGE           COMMAND       CREATED          STATUS          PORTS     NAMES
+da81b50a1241   centos:latest   "/bin/bash"   55 seconds ago   Up 53 seconds             naughty_ptolemy
+```
+
+To see all process in container
+```sh
+[root@ip-172-31-87-150 ~]# docker top da81b50a1241
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                30067               30025               0                   05:55               pts/0               00:00:00            /bin/bash
+root                30255               30067               0                   05:59               pts/0               00:00:00            /usr/bin/coreutils --coreutils-prog-shebang=sleep /usr/bin/sleep 60
+```
+
+## **docker stats**
+
+This command is used to provide the statistics of a running container.
+
+Syntax
+    
+    docker stats ContainerID 
+
+example:
+```sh
+[root@ip-172-31-87-150 ~]# docker stats b87d1b958380
+CONTAINER ID   NAME            CPU %     MEM USAGE / LIMIT     MEM %     NET I/O     BLOCK I/O     PIDS
+b87d1b958380   nice_poincare   0.00%     2.836MiB / 983.3MiB   0.29%     960B / 0B   3.06MB / 0B   1
+```
+
+## **docker attach**
+
+This command is used to attach to a running container.
+
+Syntax
+
+	docker attach ContainerID 
+
+example:
+```sh
+[root@ip-172-31-87-150 ~]# docker attach b87d1b958
+[root@b87d1b958380 /]#
+```
+
+## **docker pause**
+
+This command is used to pause the processes in a running container.
+
+Syntax
+
+	docker pause ContainerID 
+
+example:
 
 ```
+[root@ip-172-31-87-150 ~]# docker ps
+CONTAINER ID   IMAGE           COMMAND       CREATED          STATUS         PORTS     NAMES
+b87d1b958380   centos:latest   "/bin/bash"   12 minutes ago   Up 3 minutes             nice_poincare
+
+[root@ip-172-31-87-150 ~]# docker pause nice_poincare
+nice_poincare
+
+[root@ip-172-31-87-150 ~]# docker ps
+CONTAINER ID   IMAGE           COMMAND       CREATED          STATUS                  PORTS     NAMES
+b87d1b958380   centos:latest   "/bin/bash"   15 minutes ago   Up 6 minutes (Paused)             nice_poincare
+```
+## **docker unpause**
+
+This command is used to unpause the processes in a running container.
+
+Syntax
+    
+    docker unpause ContainerID
+
+Example
+```sh
+[root@ip-172-31-87-150 ~]# docker unpause nice_poincare
+nice_poincare
+
+[root@ip-172-31-87-150 ~]# docker ps
+CONTAINER ID   IMAGE           COMMAND       CREATED          STATUS          PORTS     NAMES
+b87d1b958380   centos:latest   "/bin/bash"   30 minutes ago   Up 21 minutes             nice_poincare
+```
+
+## **docker kill**
+
+This command is used to kill the processes in a running container. We can run the command when "docker stop" not work
+
+Syntax
+
+	docker kill ContainerID	
+
+Example
+```sh
+[root@ip-172-31-87-150 ~]# docker kill nice_poincare
+nice_poincare
+
+[root@ip-172-31-87-150 ~]# docker ps -a
+CONTAINER ID   IMAGE           COMMAND       CREATED          STATUS                       PORTS     NAMES
+b87d1b958380   centos:latest   "/bin/bash"   31 minutes ago   Exited (137) 9 seconds ago             nice_poincare
+```
+
+
+
